@@ -7,114 +7,136 @@
   <style>
     body {
       margin: 0;
-      background-color: #0c0c0c;
-      font-family: Arial, sans-serif;
+      padding: 0;
+      background-color: #0d0d0d;
       color: white;
+      font-family: Arial, sans-serif;
     }
 
     .container {
-      padding: 20px;
       max-width: 400px;
       margin: 0 auto;
+      padding: 20px;
     }
 
-    .form label {
+    label {
       display: block;
-      margin-bottom: 6px;
-      margin-top: 20px;
-      font-size: 14px;
-      color: #dcdcdc;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #ccc;
     }
 
     .input-group {
       display: flex;
       align-items: center;
-      background-color: #1b1b1b;
+      background-color: #1a1a1a;
+      border: 1px solid #333;
       border-radius: 8px;
       padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid #3a3a3a;
+      margin-bottom: 20px;
     }
 
-    .input-group input {
+    input[type="text"],
+    input[type="number"] {
       flex: 1;
-      background: none;
+      background-color: transparent;
       border: none;
-      outline: none;
       color: white;
+      outline: none;
       font-size: 16px;
     }
 
     .input-group button {
-      background: none;
-      border: none;
-      color: #4caf50;
-      font-size: 14px;
       margin-left: 10px;
+      background-color: transparent;
+      color: #00ff99;
+      border: none;
       cursor: pointer;
+      font-size: 14px;
     }
 
     .usd-value {
-      font-size: 13px;
-      color: #888;
-      margin-bottom: 30px;
+      margin-top: -10px;
+      margin-bottom: 20px;
+      color: #999;
     }
 
     .next-button {
       width: 100%;
+      background-color: #00cc66;
+      color: white;
       padding: 15px;
       font-size: 18px;
-      background-color: #00c853;
+      font-weight: bold;
       border: none;
-      border-radius: 30px;
-      color: white;
+      border-radius: 50px;
+      cursor: pointer;
+    }
+
+    .icon {
+      width: 18px;
+      height: 18px;
+      fill: #00ff99;
+      vertical-align: middle;
+    }
+
+    .input-group svg {
+      margin-left: 8px;
       cursor: pointer;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="form">
-      <label for="address">Address or Domain Name</label>
-      <div class="input-group">
-        <input type="text" id="address" value="0x1384ebBC982d61ca4f40E9" />
-        <button onclick="pasteAddress()">Paste</button>
-        <button title="Scan QR">🧾</button>
-      </div>
-
-      <label for="amount">Amount</label>
-      <div class="input-group">
-        <input type="number" id="amount" placeholder="USDT Amount" oninput="updateUSD()" />
-        <span style="margin-left: 10px;">USDT</span>
-        <button onclick="setMax()">Max</button>
-      </div>
-
-      <div class="usd-value" id="usdValue">≈ $0.00</div>
-
-      <button class="next-button">Next</button>
+    <label for="address">Address or Domain Name</label>
+    <div class="input-group">
+      <input type="text" id="address" value="0x1384ebBC982d61ca4f40E9" />
+      <button onclick="pasteAddress()">Paste</button>
+      <svg class="icon" viewBox="0 0 24 24">
+        <path d="M3 3h6v2H5v14h14v-4h2v6H3V3zm18-1v8h-8V2h8zm-2 2h-4v4h4V4zm-8 6h10v2H11v-2zm0 4h10v2H11v-2zm0 4h6v2h-6v-2z"/>
+      </svg>
     </div>
+
+    <label for="amount">Amount</label>
+    <div class="input-group">
+      <input type="number" id="amount" placeholder="USDT Amount" oninput="updateUSD()" />
+      <span style="margin-left: 10px;">USDT</span>
+      <button onclick="setMax()">Max</button>
+    </div>
+
+    <div class="usd-value" id="usdValue">≈ $0.00</div>
+
+    <button class="next-button" onclick="next()">Next</button>
   </div>
 
   <script>
+    function pasteAddress() {
+      navigator.clipboard.readText().then((text) => {
+        document.getElementById('address').value = text;
+      });
+    }
+
     function setMax() {
-      const maxAmount = 100; // Example max value for testing
+      const maxAmount = 100; // Change as needed
       document.getElementById("amount").value = maxAmount;
       updateUSD();
     }
 
     function updateUSD() {
       const amount = parseFloat(document.getElementById("amount").value || "0");
-      const usdValue = amount.toFixed(2);
-      document.getElementById("usdValue").innerText = `≈ $${usdValue}`;
+      const usdValue = amount * 1; // USDT assumed 1:1
+      document.getElementById("usdValue").innerText = `≈ $${usdValue.toFixed(2)}`;
     }
 
-    async function pasteAddress() {
-      try {
-        const text = await navigator.clipboard.readText();
-        document.getElementById("address").value = text;
-      } catch (err) {
-        alert("Clipboard access not allowed in this browser.");
+    function next() {
+      const address = document.getElementById("address").value;
+      const amount = document.getElementById("amount").value;
+      if (!address || !amount) {
+        alert("Please fill in both address and amount.");
+        return;
       }
+      // You can redirect or handle form here
+      console.log("Sending to:", address, "Amount:", amount);
     }
   </script>
 </body>
